@@ -25,7 +25,7 @@
         android:text="@string/button_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnAcceder"
+        android:id="@+id/btnLogin"
         android:layout_below="@+id/etDNI"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="92dp" />
@@ -43,12 +43,14 @@
         android:hint="@string/introduce_password" />
 
     <Button
-        android:text="@string/ResetVotos"
+        android:text="@string/ResetVote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="22dp"
-        android:id="@+id/btnResetVotos"
-        style="@android:style/Widget.DeviceDefault.Button.Borderless" />
+        android:id="@+id/btnResetVote"
+        style="@android:style/Widget.DeviceDefault.Button.Borderless"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+        android:textColor="@color/colorAccent" />
 </RelativeLayout>

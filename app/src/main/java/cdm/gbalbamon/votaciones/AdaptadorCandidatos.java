@@ -11,10 +11,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by User on 25/11/2016.
- */
-
 public class AdaptadorCandidatos extends ArrayAdapter<Candidato> {
 
     public static class ViewHolder {

@@ -14,7 +14,8 @@ public class Login extends Activity {
 
     private EditText editTextDNI;
     private EditText editTextPass;
-    private Button buttonAcceder;
+    private Button buttonLogin;
+    private Button buttonResetVotes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,22 +24,29 @@ public class Login extends Activity {
 
         editTextDNI = (EditText) findViewById(R.id.etDNI);
         editTextPass = (EditText) findViewById(R.id.etPassword);
-        buttonAcceder = (Button) findViewById(R.id.btnAcceder);
+        buttonLogin = (Button) findViewById(R.id.btnLogin);
+        buttonResetVotes = (Button) findViewById(R.id.btnResetVote);
 
-        buttonAcceder.setOnClickListener(new View.OnClickListener() {
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 validateLogin();
             }
         });
 
-        // DEBUG
+        buttonResetVotes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetVote();
+            }
+        });
+
+        // DEBUG: Autocomplete login
         editTextDNI.setText("77466497J");
         editTextPass.setText("pepe");
-
     }
 
-    public void validateLogin() {
+    private void validateLogin() {
         String dni = editTextDNI.getText().toString();
         String pwd = editTextPass.getText().toString();
 
@@ -53,6 +61,14 @@ public class Login extends Activity {
         } else {
             Toast.makeText(this, "DNI o contraseña incorrectos.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void resetVote() {
+        SQLite sqlite = new SQLite(this);
+        sqlite.abrir();
+        sqlite.restablecerVotos();
+        sqlite.cerrar();
+        Toast.makeText(Login.this, "Votos reseteados. ", Toast.LENGTH_SHORT).show();
     }
 
 }

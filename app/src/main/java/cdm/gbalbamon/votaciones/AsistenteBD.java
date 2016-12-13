@@ -6,10 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 
-/**
- * Created by User on 25/11/2016.
- */
-
 public class AsistenteBD extends SQLiteOpenHelper {
     static final String NOMBRE_BD = "db";
 

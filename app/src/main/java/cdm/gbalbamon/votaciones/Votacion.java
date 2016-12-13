@@ -40,13 +40,12 @@ public class Votacion extends Activity {
         }, "Votar", 3);
     }
 
-    // TODO: Como sé cuando tengo que mostrar los resultados?
-
     public void votar() {
         int idCandidato = spinnerCandidatos.getFirstVisiblePosition() + 1;
         SQLiteDatabase bd = new AsistenteBD(this, 1).getReadableDatabase();
         Cursor filas = bd.rawQuery("update candidatos set votos = votos + 1 where id=" + idCandidato, null);
         filas.moveToFirst();
+        filas.close();
         bd.close();
     }
 
@@ -56,19 +55,17 @@ public class Votacion extends Activity {
         Cursor filas = bd.rawQuery("select name as nombre_candidato, votos as cantidad_votos from candidatos", null);
         int indexNombreCandidato = filas.getColumnIndex("nombre_candidato");
         int indexVotosCandidato = filas.getColumnIndex("cantidad_votos");
-        while (filas.moveToNext()) {
-            String nombreCandidato = filas.getString(indexNombreCandidato);
-            int cantidadVotos = filas.getInt(indexVotosCandidato);
-            String a = textViewResultados.getText().toString();
-            textViewResultados.setText(a + "\n" + nombreCandidato + " (" + cantidadVotos + ")");
+        try {
+            while (filas.moveToNext()) {
+                String nombreCandidato = filas.getString(indexNombreCandidato);
+                int cantidadVotos = filas.getInt(indexVotosCandidato);
+                String a = textViewResultados.getText().toString();
+                textViewResultados.setText(a + "\n" + nombreCandidato + " (" + cantidadVotos + ")");
+            }
+        } finally {
+            filas.close();
         }
         bd.close();
-
-        SQLite sqlite = new SQLite(this);
-        sqlite.abrir();
-        sqlite.restablecerVotos();
-        sqlite.cerrar();
-        Toast.makeText(Votacion.this, "Votos reseteados. ", Toast.LENGTH_SHORT).show();
     }
 
     public ArrayList<Candidato> getDatosCandidatos() {
@@ -80,12 +77,16 @@ public class Votacion extends Activity {
         int indexNombreCandidato = filas.getColumnIndex("nombre_candidato");
         int indexNombrePartido = filas.getColumnIndex("nombre_partido");
         int indexColorPartido = filas.getColumnIndex("color_partido");
-        while (filas.moveToNext()) {
-            int id = filas.getInt(indexIdCandidato);
-            String nombre = filas.getString(indexNombreCandidato);
-            String partido = filas.getString(indexNombrePartido);
-            int color = filas.getInt(indexColorPartido);
-            listaCandidatos.add(new Candidato(id, nombre, partido, color));
+        try {
+            while (filas.moveToNext()) {
+                int id = filas.getInt(indexIdCandidato);
+                String nombre = filas.getString(indexNombreCandidato);
+                String partido = filas.getString(indexNombrePartido);
+                int color = filas.getInt(indexColorPartido);
+                listaCandidatos.add(new Candidato(id, nombre, partido, color));
+            }
+        } finally {
+            filas.close();
         }
         bd.close();
         return listaCandidatos;

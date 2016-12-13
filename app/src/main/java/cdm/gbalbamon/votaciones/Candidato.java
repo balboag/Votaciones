@@ -2,10 +2,6 @@ package cdm.gbalbamon.votaciones;
 
 import android.graphics.Color;
 
-/**
- * Created by User on 25/11/2016.
- */
-
 public class Candidato {
 
     private int id;
