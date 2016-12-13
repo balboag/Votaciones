@@ -43,27 +43,27 @@ public class Votacion extends Activity {
     public void votar() {
         int idCandidato = spinnerCandidatos.getFirstVisiblePosition() + 1;
         SQLiteDatabase bd = new AsistenteBD(this, 1).getReadableDatabase();
-        Cursor filas = bd.rawQuery("update candidatos set votos = votos + 1 where id=" + idCandidato, null);
-        filas.moveToFirst();
-        filas.close();
+        Cursor cursor = bd.rawQuery("update candidatos set votos = votos + 1 where id=" + idCandidato, null);
+        cursor.moveToFirst();
+        cursor.close();
         bd.close();
     }
 
     public void mostrarResultados() {
         textViewResultados.setText("Resultados:\n");
         SQLiteDatabase bd = new AsistenteBD(this, 1).getReadableDatabase();
-        Cursor filas = bd.rawQuery("select name as nombre_candidato, votos as cantidad_votos from candidatos", null);
-        int indexNombreCandidato = filas.getColumnIndex("nombre_candidato");
-        int indexVotosCandidato = filas.getColumnIndex("cantidad_votos");
+        Cursor cursor = bd.rawQuery("select name as nombre_candidato, votos as cantidad_votos from candidatos", null);
+        int indexNombreCandidato = cursor.getColumnIndex("nombre_candidato");
+        int indexVotosCandidato = cursor.getColumnIndex("cantidad_votos");
         try {
-            while (filas.moveToNext()) {
-                String nombreCandidato = filas.getString(indexNombreCandidato);
-                int cantidadVotos = filas.getInt(indexVotosCandidato);
+            while (cursor.moveToNext()) {
+                String nombreCandidato = cursor.getString(indexNombreCandidato);
+                int cantidadVotos = cursor.getInt(indexVotosCandidato);
                 String a = textViewResultados.getText().toString();
                 textViewResultados.setText(a + "\n" + nombreCandidato + " (" + cantidadVotos + ")");
             }
         } finally {
-            filas.close();
+            cursor.close();
         }
         bd.close();
     }
@@ -71,22 +71,22 @@ public class Votacion extends Activity {
     public ArrayList<Candidato> getDatosCandidatos() {
         ArrayList<Candidato> listaCandidatos = new ArrayList<>();
         SQLiteDatabase bd = new AsistenteBD(this, 1).getReadableDatabase();
-        Cursor filas = bd.rawQuery("select candidatos.id as id_candidato, candidatos.name as nombre_candidato, partidos.name as nombre_partido, partidos.color as color_partido from candidatos " +
+        Cursor cursor = bd.rawQuery("select candidatos.id as id_candidato, candidatos.name as nombre_candidato, partidos.name as nombre_partido, partidos.color as color_partido from candidatos " +
                 "inner join partidos where candidatos.id_partido=partidos.id", null);
-        int indexIdCandidato = filas.getColumnIndex("id_candidato");
-        int indexNombreCandidato = filas.getColumnIndex("nombre_candidato");
-        int indexNombrePartido = filas.getColumnIndex("nombre_partido");
-        int indexColorPartido = filas.getColumnIndex("color_partido");
+        int indexIdCandidato = cursor.getColumnIndex("id_candidato");
+        int indexNombreCandidato = cursor.getColumnIndex("nombre_candidato");
+        int indexNombrePartido = cursor.getColumnIndex("nombre_partido");
+        int indexColorPartido = cursor.getColumnIndex("color_partido");
         try {
-            while (filas.moveToNext()) {
-                int id = filas.getInt(indexIdCandidato);
-                String nombre = filas.getString(indexNombreCandidato);
-                String partido = filas.getString(indexNombrePartido);
-                int color = filas.getInt(indexColorPartido);
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(indexIdCandidato);
+                String nombre = cursor.getString(indexNombreCandidato);
+                String partido = cursor.getString(indexNombrePartido);
+                int color = cursor.getInt(indexColorPartido);
                 listaCandidatos.add(new Candidato(id, nombre, partido, color));
             }
         } finally {
-            filas.close();
+            cursor.close();
         }
         bd.close();
         return listaCandidatos;

@@ -65,9 +65,9 @@ public class Login extends Activity {
 
     private void resetVote() {
         SQLite sqlite = new SQLite(this);
-        sqlite.abrir();
-        sqlite.restablecerVotos();
-        sqlite.cerrar();
+        sqlite.open();
+        sqlite.resetVote();
+        sqlite.close();
         Toast.makeText(Login.this, "Votos reseteados. ", Toast.LENGTH_SHORT).show();
     }
 

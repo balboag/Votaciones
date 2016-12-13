@@ -9,31 +9,23 @@ public class SQLite {
     AsistenteBD sqliteHelper;
     SQLiteDatabase db;
 
-    /**
-     * Constructor de clase
-     */
     public SQLite(Context context) {
         sqliteHelper = new AsistenteBD(context, 1);
     }
 
-    /**
-     * Abre conexion a base de datos
-     */
-    public void abrir() {
+    public void open() {
         Log.i("SQLite", "Se abre conexión a la base de datos " + sqliteHelper.getDatabaseName());
         db = sqliteHelper.getWritableDatabase();
     }
 
-    /**
-     * Cierra conexion a la base de datos
-     */
-    public void cerrar() {
+    public void close() {
         Log.i("SQLite", "Se cierra conexión a la base de datos " + sqliteHelper.getDatabaseName());
         sqliteHelper.close();
     }
 
-    public void restablecerVotos() {
-        Cursor filas = db.rawQuery("update candidatos set votos = 0", null);
-        filas.moveToFirst();
+    public void resetVote() {
+        Cursor cursor = db.rawQuery("update candidatos set votos = 0", null);
+        cursor.moveToFirst();
+        cursor.close();
     }
 }

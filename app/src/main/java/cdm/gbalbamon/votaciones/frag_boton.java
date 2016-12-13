@@ -13,22 +13,22 @@ public class frag_boton extends Fragment {
     private int maxNumClicks;
     private int numClicks;
     private String textButton;
-    private Button botonVotar;
+    private Button buttonVote;
 
     private OnFragmentInteractionListener mListener;
 
     public interface OnFragmentInteractionListener {
         void onClickBotonVotar();
+
         void heAcabado();
     }
 
     public void onClickBoton() {
-        numClicks--;
-        if (numClicks > 0) {
-            botonVotar.setText(textButton + " " + numClicks + "/" + maxNumClicks);
+        if (--numClicks > 0) {
+            buttonVote.setText(textButton + " " + numClicks + "/" + maxNumClicks);
         } else {
-            botonVotar.setText(textButton + " " + numClicks + "/" + maxNumClicks);
-            botonVotar.setEnabled(false);
+            buttonVote.setText(textButton + " " + numClicks + "/" + maxNumClicks);
+            buttonVote.setEnabled(false);
             mListener.heAcabado();
         }
     }
@@ -38,7 +38,7 @@ public class frag_boton extends Fragment {
         this.textButton = text;
         this.numClicks = numClicks;
         maxNumClicks = numClicks;
-        botonVotar.setText(text + " " + numClicks + "/" + maxNumClicks);
+        buttonVote.setText(text + " " + numClicks + "/" + maxNumClicks);
     }
 
     public frag_boton() {
@@ -53,9 +53,9 @@ public class frag_boton extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.frag_boton, container, false);
-        botonVotar = (Button) view.findViewById(R.id.btnVotar);
+        buttonVote = (Button) view.findViewById(R.id.btnVotar);
 
-        botonVotar.setOnClickListener(new View.OnClickListener() {
+        buttonVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onClickBotonVotar();
