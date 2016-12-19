@@ -28,4 +28,10 @@ public class SQLite {
         cursor.moveToFirst();
         cursor.close();
     }
+
+    public void resetUsers() {
+        Cursor cursor = db.rawQuery("update usuarios set hasVoted = 0", null);
+        cursor.moveToFirst();
+        cursor.close();
+    }
 }

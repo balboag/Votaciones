@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="15dp"
-        android:id="@+id/tvResultados"
+        android:id="@+id/tvVoteResults"
         android:textAlignment="center"
         android:layout_below="@+id/fragment_btnVotar"
         android:layout_alignParentLeft="true"
@@ -32,7 +32,7 @@
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:name="cdm.gbalbamon.votaciones.frag_boton"
+        android:name="cdm.gbalbamon.votaciones.FragBoton"
         android:layout_marginTop="14dp"
         android:id="@+id/fragment_btnVotar"
         tools:layout="@layout/frag_boton"

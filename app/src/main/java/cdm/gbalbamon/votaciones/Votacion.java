@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,43 +13,62 @@ import java.util.ArrayList;
 
 public class Votacion extends Activity {
 
+    private ArrayList<Candidato> listaCandidatos;
     private Spinner spinnerCandidatos;
-    private TextView textViewResultados;
+    private TextView textViewVoteResults;
+    private String dniUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_votacion);
+
+        dniUser = getIntent().getStringExtra("DNI");
+
+        Toast.makeText(this, dniUser, Toast.LENGTH_SHORT).show();
+
         spinnerCandidatos = (Spinner) findViewById(R.id.spCandidatos);
-        spinnerCandidatos.setAdapter(new AdaptadorCandidatos(this, getDatosCandidatos()));
 
-        textViewResultados = (TextView) findViewById(R.id.tvResultados);
+        listaCandidatos = getDatosCandidatos();
+        spinnerCandidatos.setAdapter(new AdaptadorCandidatos(this, listaCandidatos));
 
-        frag_boton frg_btn = (frag_boton) (getFragmentManager().findFragmentById(R.id.fragment_btnVotar));
-        frg_btn.setOnFragmentInteraction(new frag_boton.OnFragmentInteractionListener() {
+        textViewVoteResults = (TextView) findViewById(R.id.tvVoteResults);
+
+        FragBoton frg_btn = (FragBoton) (getFragmentManager().findFragmentById(R.id.fragment_btnVotar));
+        frg_btn.setOnFragmentInteraction(new FragBoton.OnFragmentInteractionListener() {
             @Override
-            public void onClickBotonVotar() {
-                votar();
+            public void onClickBotonVotar(int numClicks) {
+                vote(numClicks);
             }
 
             @Override
-            public void heAcabado() {
-                mostrarResultados();
+            public void lastClick() {
+                userHasVoted(dniUser);
+                showResults();
             }
         }, "Votar", 3);
     }
 
-    public void votar() {
-        int idCandidato = spinnerCandidatos.getFirstVisiblePosition() + 1;
+    public void vote(int numClicks) {
+        Candidato candidato = (Candidato) spinnerCandidatos.getSelectedItem();
         SQLiteDatabase bd = new AsistenteBD(this, 1).getReadableDatabase();
-        Cursor cursor = bd.rawQuery("update candidatos set votos = votos + 1 where id=" + idCandidato, null);
+        Cursor cursor = bd.rawQuery("update candidatos set votos = votos + 1 where id=" + candidato.getId(), null);
+        cursor.moveToFirst();
+        cursor.close();
+        bd.close();
+        Toast.makeText(this, "Registrado voto número " + numClicks + " al candidato " + candidato.getNombre(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void userHasVoted(String dni) {
+        SQLiteDatabase bd = new AsistenteBD(this, 1).getReadableDatabase();
+        Cursor cursor = bd.rawQuery("update usuarios set hasVoted = 1 where dni = '" + dni + "'", null);
         cursor.moveToFirst();
         cursor.close();
         bd.close();
     }
 
-    public void mostrarResultados() {
-        textViewResultados.setText("Resultados:\n");
+    public void showResults() {
+        textViewVoteResults.setText("Resultados:\n");
         SQLiteDatabase bd = new AsistenteBD(this, 1).getReadableDatabase();
         Cursor cursor = bd.rawQuery("select name as nombre_candidato, votos as cantidad_votos from candidatos", null);
         int indexNombreCandidato = cursor.getColumnIndex("nombre_candidato");
@@ -59,8 +77,8 @@ public class Votacion extends Activity {
             while (cursor.moveToNext()) {
                 String nombreCandidato = cursor.getString(indexNombreCandidato);
                 int cantidadVotos = cursor.getInt(indexVotosCandidato);
-                String a = textViewResultados.getText().toString();
-                textViewResultados.setText(a + "\n" + nombreCandidato + " (" + cantidadVotos + ")");
+                String a = textViewVoteResults.getText().toString();
+                textViewVoteResults.setText(a + "\n" + nombreCandidato + " (" + cantidadVotos + ")");
             }
         } finally {
             cursor.close();
@@ -95,7 +113,5 @@ public class Votacion extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        // remove animation  http://stackoverflow.com/a/32347183c
-        overridePendingTransition(0, 0);
     }
 }
